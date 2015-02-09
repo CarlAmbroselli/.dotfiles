@@ -35,5 +35,3 @@ function dotfiles() {
 }
 
 src
-
-# Customize to your needs...

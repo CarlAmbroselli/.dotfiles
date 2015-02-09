@@ -14,6 +14,7 @@ alias cdmmtex='cd ~/Development/Java/Mastermind/extra/business/plan/Chapters'
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias vim='/usr/local/bin/vim'
 alias vi='/usr/local/bin/vim'
+alias c='clear'
 
 alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 

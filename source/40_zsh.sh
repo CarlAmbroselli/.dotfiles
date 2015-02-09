@@ -1,4 +1,5 @@
 function cd() { builtin cd "$*" && ls; } # Always list directory contents upon 'cd'
+unalias rm
 
 bindkey -v
 
