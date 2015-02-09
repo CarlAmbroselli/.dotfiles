@@ -1,9 +1,31 @@
-
 set nocompatible              " be iMproved, required
 filetype off                  " required
 set shell=/bin/zsh
 
-" GuiColorScheme distinguished
+" Required Vundle setup
+filetype off
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+Plugin 'vim-scripts/LanguageTool'
+Plugin 'moll/vim-bbye'
+Plugin 'othree/javascript-libraries-syntax.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'godlygeek/tabular'
+Plugin 'bling/vim-airline'
+Plugin 'tpope/vim-fugitive'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'mbbill/undotree'
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Highlight markdown syntax
 au BufRead,BufNewFile *.md set filetype=markdown
 
 set ignorecase
@@ -17,9 +39,9 @@ set incsearch     " do incremental searching
 set laststatus=2  " Always display the status line
 set autowrite     " Automatically :write before running commands
 
-execute pathogen#infect()
-
 :scriptencoding utf-8
+
+" German umlaute
 imap O Ö
 imap o ö
 imap A Ä
@@ -39,18 +61,12 @@ if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
   syntax on
 endif
 
-if filereadable(expand("~/.vimrc.bundles"))
-  source ~/.vimrc.bundles
-endif
-
-filetype plugin indent on
-
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" enables :P to just do what you want
+" enables :Pc to just do what you want
 command Pc execute ':r !pbpaste'
 
 " Only do this part when compiled with support for autocommands.
@@ -98,7 +114,7 @@ if has("autocmd")
 
 else
 
-  set autoindent		" always set autoindenting on
+set autoindent		" always set autoindenting on
 
 endif " has("autocmd")
 
@@ -113,10 +129,6 @@ endif
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
 
-" Open new split panes to right and bottom, which feels more natural
-" set splitbelow
-" set splitright
-
 " Quicker window movement
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
@@ -126,6 +138,7 @@ nnoremap <C-l> <C-w>l
 :nnoremap <C-n> :bnext<CR>
 :nnoremap <C-p> :bprevious<CR>
 
+" Killing the habbits
 noremap <Up> <NOP>
 noremap <Down> <NOP>
 noremap <Left> <NOP>
@@ -151,6 +164,7 @@ set softtabstop=2
 
 let g:airline#extensions#tabline#enabled = 1
 
+" Faster buffer navigation
 map [ :bprevious<CR>
 map ] :bnext<CR>
 
@@ -178,7 +192,8 @@ nnoremap <C-s> :w<CR>
 inoremap <C-s> <ESC>:w<CR>
 map q: :q
 
-let g:languagetool_jar='/Users/carlambroselli/.vim/bundle/LanguageTool/LanguageTool-2.8/languagetool-commandline.jar'
+" LanguageTool
+let g:languagetool_jar='~/.vim/bundle/LanguageTool/LanguageTool-2.8/languagetool-commandline.jar'
 
 nnoremap <C-c> :LanguageToolCheck<CR>
 nnoremap <C-x> :LanguageToolClear<CR>
