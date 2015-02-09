@@ -109,7 +109,7 @@ There's a lot of stuff that requires admin access via `sudo`, so be warned that 
 ### Actual installation (for me)
 
 ```sh
-bash -c "$(curl -fsSL https://bit.ly/cowboy-dotfiles)" && source ~/.bashrc
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/CarlAmbroselli/.dotfiles/master/bin/dotfiles)" && source ~/.bashrc
 ```
 
 ## Aliases and Functions
@@ -140,12 +140,12 @@ Check it out:
 
 ![My awesome bash prompt](http://farm8.staticflickr.com/7142/6754488927_563dd73553_b.jpg)
 
+## Original source
+https://github.com/cowboy/dotfiles
+
 ## Inspiration
 <https://github.com/gf3/dotfiles>  
 <https://github.com/mathiasbynens/dotfiles>  
-(and 15+ years of accumulated crap)
 
 ## License
-Copyright (c) 2014 "Cowboy" Ben Alman  
 Licensed under the MIT license.  
-<http://benalman.com/about/license/>
