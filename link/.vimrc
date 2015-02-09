@@ -1,280 +1,195 @@
-" Change mapleader
-let mapleader=","
 
-" Move more naturally up/down when wrapping is enabled.
-nnoremap j gj
-nnoremap k gk
+set nocompatible              " be iMproved, required
+filetype off                  " required
+set shell=/bin/zsh
 
-" Local dirs
-if !has('win32')
-  set backupdir=$DOTFILES/caches/vim
-  set directory=$DOTFILES/caches/vim
-  set undodir=$DOTFILES/caches/vim
-  let g:netrw_home = expand('$DOTFILES/caches/vim')
+" GuiColorScheme distinguished
+au BufRead,BufNewFile *.md set filetype=markdown
+
+set ignorecase
+set nobackup
+set nowritebackup
+set noswapfile    " http://robots.thoughtbot.com/post/18739402579/global-gitignore#comment-458413287
+set history=50
+set ruler         " show the cursor position all the time
+set showcmd       " display incomplete commands
+set incsearch     " do incremental searching
+set laststatus=2  " Always display the status line
+set autowrite     " Automatically :write before running commands
+
+execute pathogen#infect()
+
+:scriptencoding utf-8
+imap O Ö
+imap o ö
+imap A Ä
+imap a ä
+imap U Ü
+imap u ü
+imap s ß
+set term=builtin_ansi
+set timeoutlen=10 ttimeoutlen=0
+
+" <Ctrl-l> redraws the screen and removes any search highlighting.
+nnoremap <silent> <C-l> :nohl<CR><C-l>
+
+" Switch syntax highlighting on, when the terminal has colors
+" " Also switch on highlighting the last used search pattern.
+if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
+  syntax on
 endif
 
-" Theme / Syntax highlighting
-augroup color_scheme
-  autocmd!
-  " Make invisible chars less visible in terminal.
-  autocmd ColorScheme * :hi NonText ctermfg=236
-  autocmd ColorScheme * :hi SpecialKey ctermfg=236
-  " Show trailing whitespace.
-  autocmd ColorScheme * :hi ExtraWhitespace ctermbg=red guibg=red
-  " Make selection more visible.
-  autocmd ColorScheme * :hi Visual guibg=#00588A
-  autocmd ColorScheme * :hi link multiple_cursors_cursor Search
-  autocmd ColorScheme * :hi link multiple_cursors_visual Visual
-augroup END
-
-let g:molokai_italic=0
-colorscheme molokai
-set background=dark
-
-" Visual settings
-set cursorline " Highlight current line
-set number " Enable line numbers.
-set showtabline=2 " Always show tab bar.
-set relativenumber " Use relative line numbers. Current line is still in status bar.
-set title " Show the filename in the window titlebar.
-set nowrap " Do not wrap lines.
-set noshowmode " Don't show the current mode (airline.vim takes care of us)
-set laststatus=2 " Always show status line
-
-" Toggle between absolute and relative line numbers
-augroup relative_numbers
-  autocmd!
-  " Show absolute numbers in insert mode
-  autocmd InsertEnter * :set norelativenumber
-  autocmd InsertLeave * :set relativenumber
-augroup END
-
-" Make it obvious where 80 characters is
-set textwidth=80
-set colorcolumn=+1
-
-" Scrolling
-set scrolloff=3 " Start scrolling three lines before horizontal border of window.
-set sidescrolloff=3 " Start scrolling three columns before vertical border of window.
-
-" Indentation
-set autoindent " Copy indent from last line when starting new line.
-set shiftwidth=2 " The # of spaces for indenting.
-set smarttab " At start of line, <Tab> inserts shiftwidth spaces, <Bs> deletes shiftwidth spaces.
-set softtabstop=2 " Tab key results in 2 spaces
-set tabstop=2 " Tabs indent only 2 spaces
-set expandtab " Expand tabs to spaces
-
-" Reformatting
-set nojoinspaces " Only insert single space after a '.', '?' and '!' with a join command.
-
-" Toggle show tabs and trailing spaces (,c)
-if has('win32')
-  set listchars=tab:>\ ,trail:.,eol:$,nbsp:_,extends:>,precedes:<
-else
-  set listchars=tab:▸\ ,trail:·,eol:¬,nbsp:_,extends:>,precedes:<
+if filereadable(expand("~/.vimrc.bundles"))
+  source ~/.vimrc.bundles
 endif
-"set listchars=tab:>\ ,trail:.,eol:$,nbsp:_,extends:>,precedes:<
-"set fillchars=fold:-
-nnoremap <silent> <leader>v :call ToggleInvisibles()<CR>
 
-" Extra whitespace
-augroup highlight_extra_whitespace
-  autocmd!
-  autocmd BufWinEnter * :2match ExtraWhitespaceMatch /\s\+$/
-  autocmd InsertEnter * :2match ExtraWhitespaceMatch /\s\+\%#\@<!$/
-  autocmd InsertLeave * :2match ExtraWhitespaceMatch /\s\+$/
-augroup END
+filetype plugin indent on
 
-" Toggle Invisibles / Show extra whitespace
-function! ToggleInvisibles()
-  set nolist!
-  if &list
-    hi! link ExtraWhitespaceMatch ExtraWhitespace
-  else
-    hi! link ExtraWhitespaceMatch NONE
-  endif
-endfunction
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-set nolist
-call ToggleInvisibles()
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
 
-" Trim extra whitespace
-function! StripExtraWhiteSpace()
-  let l = line(".")
-  let c = col(".")
-  %s/\s\+$//e
-  call cursor(l, c)
-endfunction
-noremap <leader>ss :call StripExtraWhiteSpace()<CR>
+" enables :P to just do what you want
+command Pc execute ':r !pbpaste'
 
-" Search / replace
-set gdefault " By default add g flag to search/replace. Add g to toggle.
-set hlsearch " Highlight searches
-set incsearch " Highlight dynamically as pattern is typed.
-set ignorecase " Ignore case of searches.
-set smartcase " Ignore 'ignorecase' if search pattern contains uppercase characters.
-
-" Clear last search
-map <silent> <leader>/ <Esc>:nohlsearch<CR>
-
-" Ignore things
-set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.o,*.obj,*.min.js
-set wildignore+=*/bower_components/*,*/node_modules/*
-set wildignore+=*/vendor/*,*/.git/*,*/.hg/*,*/.svn/*,*/log/*,*/tmp/*
-
-" Vim commands
-set hidden " When a buffer is brought to foreground, remember undo history and marks.
-set report=0 " Show all changes.
-set mouse=a " Enable mouse in all modes.
-set shortmess+=I " Hide intro menu.
-
-" Splits
-set splitbelow " New split goes below
-set splitright " New split goes right
-
-" Ctrl-J/K/L/H select split
-nnoremap <C-J> <C-W>j
-nnoremap <C-K> <C-W>k
-nnoremap <C-L> <C-W>l
-nnoremap <C-H> <C-W>h
-
-" Buffer navigation
-nnoremap <leader>b :CtrlPBuffer<CR> " List other buffers
-map <leader><leader> :b#<CR> " Switch between the last two files
-map gb :bnext<CR> " Next buffer
-map gB :bprev<CR> " Prev buffer
-
-" Jump to buffer number 1-9 with ,<N> or 1-99 with <N>gb
-let c = 1
-while c <= 99
-  if c < 10
-    execute "nnoremap <silent> <leader>" . c . " :" . c . "b<CR>"
-  endif
-  execute "nnoremap <silent> " . c . "gb :" . c . "b<CR>"
-  let c += 1
-endwhile
-
-" Fix page up and down
-map <PageUp> <C-U>
-map <PageDown> <C-D>
-imap <PageUp> <C-O><C-U>
-imap <PageDown> <C-O><C-D>
-
-" Use Q for formatting the current paragraph (or selection)
-" vmap Q gq
-" nmap Q gqap
-
-" Allow saving of files as sudo when I forgot to start vim using sudo.
-cmap w!! w !sudo tee > /dev/null %
-
-" When editing a file, always jump to the last known cursor position. Don't do
-" it for commit messages, when the position is invalid, or when inside an event
-" handler (happens when dropping a file on gvim).
-augroup vimrcEx
-  autocmd!
-  autocmd BufReadPost *
-    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
-augroup END
-
-" F12: Source .vimrc & .gvimrc files
-nmap <F12> :call SourceConfigs()<CR>
-
-if !exists("*SourceConfigs")
-  function! SourceConfigs()
-    let files = ".vimrc"
-    source $MYVIMRC
-    if has("gui_running")
-      let files .= ", .gvimrc"
-      source $MYGVIMRC
+" Only do this part when compiled with support for autocommands.
+" Tab completion
+" will insert tab at beginning of line,
+" will use completion if not at beginning
+set wildmode=list:longest,list:full
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
     endif
-    echom "Sourced " . files
-  endfunction
+endfunction
+inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <S-Tab> <c-n>
+
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
 endif
 
-"" FILE TYPES
-augroup file_types
-  autocmd!
+" Treat <li> and <p> tags like the block tags they are
+let g:html_indent_tags = 'li\|p'
 
-  " vim
-  autocmd BufRead .vimrc,*.vim set keywordprg=:help
+" Open new split panes to right and bottom, which feels more natural
+" set splitbelow
+" set splitright
 
-  " markdown
-  autocmd BufRead,BufNewFile *.md set filetype=markdown
+" Quicker window movement
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
 
-augroup END
+:nnoremap <C-n> :bnext<CR>
+:nnoremap <C-p> :bprevious<CR>
 
-" PLUGINS
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+noremap <Left> <NOP>
+noremap <Right> <NOP>
 
-" Airline
-let g:airline_powerline_fonts = 1 " TODO: detect this?
+" Plugins
+map <C-f> :NERDTreeToggle<CR>
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+set t_Co=256
+colorscheme monokai
+set ai
+
+" Word Wrap
+set wrap
+set linebreak
+set nolist
+
+" Soft Tabs
+set expandtab
+set shiftwidth=2
+set softtabstop=2
+
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_format = '%s '
-let g:airline#extensions#tabline#buffer_nr_show = 1
-"let g:airline#extensions#tabline#fnamecollapse = 0
-"let g:airline#extensions#tabline#fnamemod = ':t'
 
-" NERDTree
-let NERDTreeShowHidden = 1
-let NERDTreeMouseMode = 2
-let NERDTreeMinimalUI = 1
-map <leader>n :NERDTreeToggle<CR>
+map [ :bprevious<CR>
+map ] :bnext<CR>
 
-augroup NERDTree
-  autocmd!
-  autocmd StdinReadPre * let s:std_in=1
-  " If no file or directory arguments are specified, open NERDtree.
-  " If a directory is specified as the only argument, open it in NERDTree.
-  autocmd VimEnter *
-    \ if argc() == 0 && !exists("s:std_in") |
-    \   NERDTree |
-    \ elseif argc() == 1 && isdirectory(argv(0)) |
-    \   bd |
-    \   exec 'cd' fnameescape(argv(0)) |
-    \   NERDTree |
-    \ end
-augroup END
+nnoremap Q :Bdelete<CR>
 
-" Signify
-let g:signify_vcs_list = ['git', 'hg', 'svn']
+"Open new file
+nnoremap <Leader>o :CtrlP<CR>
 
-" CtrlP.vim
-map <leader>p <C-P>
-map <leader>r :CtrlPMRUFiles<CR>
-"let g:ctrlp_match_window_bottom = 0 " Show at top of window
+"Save file
+nnoremap <Leader>w :w<CR>
 
-" Indent Guides
-let g:indent_guides_start_level = 2
-let g:indent_guides_guide_size = 1
+"Copy & paste to system clipboard with <Space>p and <Space>y
+vmap <Leader>y "+y
+vmap <Leader>d "+d
+nmap <Leader>p "+p
+nmap <Leader>P "+P
+vmap <Leader>p "+p
+vmap <Leader>P "+P
 
-" Mustache/handlebars
-let g:mustache_abbreviations = 1
+set backspace=indent,eol,start
+set scrolloff=8
+set switchbuf=usetab
+set mouse=a
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <ESC>:w<CR>
+map q: :q
 
-" https://github.com/junegunn/vim-plug
-" Reload .vimrc and :PlugInstall to install plugins.
-call plug#begin('~/.vim/plugged')
-Plug 'bling/vim-airline'
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-vinegar'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-eunuch'
-Plug 'scrooloose/nerdtree'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'fatih/vim-go', {'for': 'go'}
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'pangloss/vim-javascript', {'for': 'javascript'}
-Plug 'mhinz/vim-signify'
-Plug 'mattn/emmet-vim'
-Plug 'mustache/vim-mustache-handlebars'
-Plug 'chase/vim-ansible-yaml'
-Plug 'wavded/vim-stylus'
-Plug 'klen/python-mode', {'for': 'python'}
-Plug 'terryma/vim-multiple-cursors'
-Plug 'wting/rust.vim', {'for': 'rust'}
-call plug#end()
+let g:languagetool_jar='/Users/carlambroselli/.vim/bundle/LanguageTool/LanguageTool-2.8/languagetool-commandline.jar'
+
+nnoremap <C-c> :LanguageToolCheck<CR>
+nnoremap <C-x> :LanguageToolClear<CR>
+set spelllang=en_us
+
+nnoremap <C-u> :UndotreeToggle<cr>
+
+if has("persistent_undo")
+    set undodir='~/.undodir/'
+    set undofile
+endif
+
+let g:vim_markdown_folding_disabled=1
+nnoremap <C-t> :TableFormat<cr>

@@ -2,7 +2,7 @@
 is_ubuntu || return 1
 
 # If the old files isn't removed, the duplicate APT alias will break sudo!
-sudoers_old="/etc/sudoers.d/sudoers-cowboy"; [[ -e "$sudoers_old" ]] && sudo rm "$sudoers_old"
+sudoers_old="/etc/sudoers.d/sudoers-carl"; [[ -e "$sudoers_old" ]] && sudo rm "$sudoers_old"
 
 # Installing this sudoers file makes life easier.
 sudoers_file="sudoers-dotfiles"
@@ -44,14 +44,12 @@ packages=(
   cowsay
   git-core
   htop
-  id3tool
-  libssl-dev
-  mercurial
   nmap
-  silversearcher-ag
   sl
   telnet
   tree
+  vim
+  openvpn
 )
 
 packages=($(setdiff "${packages[*]}" "$(dpkg --get-selections | grep -v deinstall | awk '{print $1}')"))

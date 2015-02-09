@@ -1,3 +1,6 @@
+# Deactivated for now
+return 0
+
 # OSX-only stuff. Abort if not OSX.
 is_osx || return 1
 
@@ -19,38 +22,24 @@ brew cask info this-is-somewhat-annoying 2>/dev/null
 # Homebrew casks
 casks=(
   # Applications
-  a-better-finder-rename
+  airfoil
+  betterzip
+  cloudapp
+  flux
+  hopper-disassembler
   bettertouchtool
   charles
-  chromium
-  chronosync
   dropbox
-  fastscripts
   firefox
+  marked
+  paw
+  sizeup
+  sequel-pro
   google-chrome
-  gyazo
-  hex-fiend
-  istat-menus
+  0xed
   iterm2
-  launchbar
-  macvim
-  moom
-  omnidisksweeper
-  race-for-the-galaxy
-  reaper
-  remote-desktop-connection
-  sonos
+  alfred 
   spotify
-  steam
-  synology-assistant
-  teamspeak-client
-  the-unarchiver
-  todoist
-  totalfinder
-  tower
-  transmission-remote-gui
-  vagrant
-  virtualbox
   vlc
   # Quick Look plugins
   betterzipql
