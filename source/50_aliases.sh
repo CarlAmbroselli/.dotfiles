@@ -12,8 +12,7 @@ alias cdmmweb="cd /Users/carlambroselli/Development/Java/Mastermind/Web"
 alias cdmmtex='cd ~/Development/Java/Mastermind/extra/business/plan/Chapters'
 
 alias mv='mv -iv'                           # Preferred 'mv' implementation
-alias vim='/usr/local/bin/vim'
-alias vi='/usr/local/bin/vim'
+alias vi='vim'
 alias c='clear'
 alias tmux="TERM=screen-256color-bce tmux"
 
