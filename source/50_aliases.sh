@@ -15,6 +15,7 @@ alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias vim='/usr/local/bin/vim'
 alias vi='/usr/local/bin/vim'
 alias c='clear'
+alias tmux="TERM=screen-256color-bce tmux"
 
 alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 

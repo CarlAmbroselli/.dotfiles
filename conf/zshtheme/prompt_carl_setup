@@ -1,160 +1,127 @@
-function prepare_header {
-  # do all substitutions and expansions
-  __left=${(e)_left_header}
-  __right=${(e)_right_header}
-  # remove non-printable color characters to compute length correctly
-  _left_width=${#${(S%%)__left//$~__zero/}}
-  _right_width=${#${(S%%)__right//$~__zero/}}
-  # do prompt related expansions
-  _left=${(%)__left}
-  _right=${(%)__right}
+# Pure
+# by Sindre Sorhus
+# https://github.com/sindresorhus/pure
+# MIT License
 
-  _filler_width=$(( $COLUMNS - 1 - $_left_width - $_right_width ))
+# For my own and others sanity
+# git:
+# %b => current branch
+# %a => current action (rebase/merge)
+# prompt:
+# %F => color dict
+# %f => reset color
+# %~ => current path
+# %* => time
+# %n => username
+# %m => shortname host
+# %(?..) => prompt conditional - %(condition.true.false)
+
+
+# turns seconds into human readable time
+# 165392 => 1d 21h 56m 32s
+prompt_pure_human_time() {
+    local tmp=$1
+    local days=$(( tmp / 60 / 60 / 24 ))
+    local hours=$(( tmp / 60 / 60 % 24 ))
+    local minutes=$(( tmp / 60 % 60 ))
+    local seconds=$(( tmp % 60 ))
+    (( $days > 0 )) && echo -n "${days}d "
+    (( $hours > 0 )) && echo -n "${hours}h "
+    (( $minutes > 0 )) && echo -n "${minutes}m "
+    echo "${seconds}s"
+}
+
+# fastest possible way to check if repo is dirty
+prompt_pure_git_dirty() {
+    # check if we're in a git repo
+    [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] || return
+    # check if it's dirty
+    [[ "$PURE_GIT_UNTRACKED_DIRTY" == 0 ]] && local umode="-uno" || local umode="-unormal"
+    command test -n "$(git status --porcelain --ignore-submodules ${umode})"
+
+    (($? == 0)) && echo '*'
+}
+
+# displays the exec time of the last command if set threshold was exceeded
+prompt_pure_cmd_exec_time() {
+    local stop=$EPOCHSECONDS
+    local start=${cmd_timestamp:-$stop}
+    integer elapsed=$stop-$start
+    (($elapsed > ${PURE_CMD_MAX_EXEC_TIME:=5})) && prompt_pure_human_time $elapsed
+}
+
+prompt_pure_preexec() {
+    cmd_timestamp=$EPOCHSECONDS
+
+    # shows the current dir and executed command in the title when a process is active
+    print -Pn "\e]0;"
+    echo -nE "$PWD:t: $2"
+    print -Pn "\a"
+}
+
+# string length ignoring ansi escapes
+prompt_pure_string_length() {
+    echo ${#${(S%%)1//(\%([KF1]|)\{*\}|\%[Bbkf])}}
+}
+
+prompt_pure_precmd() {
+    # shows the full path in the title
+    print -Pn '\e]0;%~\a'
+
+    # git info
+    vcs_info
+
+    local prompt_pure_preprompt="\n%F{blue}%~%F{242}$vcs_info_msg_0_`prompt_pure_git_dirty` $prompt_pure_username%f %F{yellow}`prompt_pure_cmd_exec_time`%f"
+    print -P $prompt_pure_preprompt
+
+    # check async if there is anything to pull
+    (( ${PURE_GIT_PULL:-1} )) && {
+        # check if we're in a git repo
+        [[ "$(command git rev-parse --is-inside-work-tree 2>/dev/null)" == "true" ]] &&
+        # make sure working tree is not $HOME
+        [[ "$(command git rev-parse --show-toplevel)" != "$HOME" ]] &&
+        # check check if there is anything to pull
+        command git fetch &>/dev/null &&
+        # check if there is an upstream configured for this branch
+        command git rev-parse --abbrev-ref @'{u}' &>/dev/null && {
+            local arrows=''
+            (( $(command git rev-list --right-only --count HEAD...@'{u}' 2>/dev/null) > 0 )) && arrows='⇣'
+            (( $(command git rev-list --left-only --count HEAD...@'{u}' 2>/dev/null) > 0 )) && arrows+='⇡'
+            print -Pn "\e7\e[A\e[1G\e[`prompt_pure_string_length $prompt_pure_preprompt`C%F{cyan}${arrows}%f\e8"
+        }
+    } &!
+
+    # reset value since `preexec` isn't always triggered
+    unset cmd_timestamp
 }
 
 
-function prepare_compressed_pwd {
-  local pwd="${PWD/#$HOME/~}"
+prompt_pure_setup() {
+    # prevent percentage showing up
+    # if output doesn't end with a newline
+    export PROMPT_EOL_MARK=''
 
-  if [[ "$pwd" == (#m)[/~] ]]; then
-    _cur_dir="[$MATCH]"
-    unset MATCH
-  else
-    _cur_dir="[${${${(@j:/:M)${(@s:/:)pwd}##.#?}:h}%/}/${pwd:t}]"
-  fi
+    prompt_opts=(cr subst percent)
+
+    zmodload zsh/datetime
+    autoload -Uz add-zsh-hook
+    autoload -Uz vcs_info
+
+    add-zsh-hook precmd prompt_pure_precmd
+    add-zsh-hook preexec prompt_pure_preexec
+
+    zstyle ':vcs_info:*' enable git
+    zstyle ':vcs_info:git*' formats ' %b'
+    zstyle ':vcs_info:git*' actionformats ' %b|%a'
+
+    # show username@host if logged in through SSH
+    [[ "$SSH_CONNECTION" != '' ]] && prompt_pure_username='%n@%m '
+
+    # show username@host if root, with username in white
+    [[ $UID -eq 0 ]] && prompt_pure_username='%F{white}%n%F{242}@%m '
+
+    # prompt turns red if the previous command didn't exit with 0
+    PROMPT="%(?.%F{magenta}.%F{red})${PURE_PROMPT_SYMBOL:-❯}%f "
 }
 
-function prepare_full_pwd {
-  [[ -w $PWD ]] && _cur_dir='[%d]' || _cur_dir='[%F{red}%d%f]'
-}
-
-function prompt_carl_precmd {
-  if (( $+functions[python-info] )); then
-    python-info
-  fi
-
-
-  # Prepare header line
-  prepare_header
-
-  # Format PWD.
-  prepare_full_pwd
-
-  # Get Git repository information.
-  if (( $+functions[git-info] )); then
-    git-info
-  fi
-
-  _filler=""
-  # fallback to compressed PWD if blocks aren't fitting
-  [[ _filler_width -lt 0 ]] && prepare_compressed_pwd && prepare_header
-  [[ _filler_width -gt 0 ]] && for x ({0..${_filler_width}}) _filler+=${_separator}
-  #echo $COLUMNS $_left_width $_right_width
-  #echo $_filler ${#_filler} $_filler_width
-  echo ${_left}${_filler}${_right}
-}
-
-function battery_charge() {
-  if [ -e /bin/batcharge.py ]
-  then
-    echo `python /bin/batcharge.py`
-  else
-    echo ''
-  fi
-}
-
-
-function prompt_carl_setup {
-  setopt LOCAL_OPTIONS
-  unsetopt XTRACE KSH_ARRAYS
-  prompt_opts=(cr percent subst)
-
-  # Load required functions.
-  autoload -Uz add-zsh-hook
-
-  success_color='%F{green}'
-  failure_color='%F{red}'
-
-  # Add hook for calling git-info before each command.
-  add-zsh-hook precmd prompt_carl_precmd
-
-  # Use extended color pallete if available.
-  if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
-    _prompt_steeef_colors=(
-      "%F{81}"  # Turquoise
-      "%F{166}" # Orange
-      "%F{135}" # Purple
-      "%F{161}" # Hotpink
-      "%F{118}" # Limegreen
-    )
-  else
-    _prompt_steeef_colors=(
-      "%F{cyan}"
-      "%F{yellow}"
-      "%F{magenta}"
-      "%F{red}"
-      "%F{green}"
-    )
-  fi
-
-  # Formats:
-  #   %b - branchname
-  #   %u - unstagedstr (see below)
-  #   %c - stagedstr (see below)
-  #   %a - action (e.g. rebase-i)
-  #   %R - repository path
-  #   %S - path in the repository
-  local branch_format="(${_prompt_steeef_colors[1]}%b%f%u%c)"
-  local action_format="(${_prompt_steeef_colors[5]}%a%f)"
-  local unstaged_format="${_prompt_steeef_colors[2]}●%f"
-  local staged_format="${_prompt_steeef_colors[5]}●%f"
-
-  # Set git-info parameters.
-  zstyle ':prezto:module:git:info' verbose 'yes'
-  zstyle ':prezto:module:git:info:action' format ':%%B%F{yellow}%s%f%%b'
-  zstyle ':prezto:module:git:info:added' format ' %%B%F{green}✚%f%%b'
-  zstyle ':prezto:module:git:info:ahead' format ' %%B%F{yellow}⬆%f%%b'
-  zstyle ':prezto:module:git:info:behind' format ' %%B%F{yellow}⬇%f%%b'
-  zstyle ':prezto:module:git:info:branch' format ':%F{green}%b%f'
-  zstyle ':prezto:module:git:info:commit' format ':%F{green}%.7c%f'
-  zstyle ':prezto:module:git:info:deleted' format ' %%B%F{red}✖%f%%b'
-  zstyle ':prezto:module:git:info:modified' format ' %%B%F{blue}✱%f%%b'
-  zstyle ':prezto:module:git:info:position' format ':%F{red}%p%f'
-  zstyle ':prezto:module:git:info:renamed' format ' %%B%F{magenta}➜%f%%b'
-  zstyle ':prezto:module:git:info:stashed' format ' %%B%F{cyan}✭%f%%b'
-  zstyle ':prezto:module:git:info:unmerged' format ' %%B%F{yellow}═%f%%b'
-  zstyle ':prezto:module:git:info:untracked' format ' %%B%F{white}◼%f%%b'
-  zstyle ':prezto:module:git:info:keys' format \
-    'prompt' '(%F{blue}git%f$(coalesce "%b" "%p" "%c")%s%A%B%S%a%d%m%r%U%u)'
-
-  # Set python-info parameters.
-  zstyle ':prezto:module:python:info:virtualenv' format '(%v)'
-
-  # Pattern listing visual modifiers
-  __zero='%([BSUbfksu]|([FB]|){*})'
-
-  # Header blocks
-  _time='(%T)'
-
-  [[ -n $SSH_CLIENT ]] && _host='@%F{cyan}%m%f' || _host=''
-  _user_host="(%(!.%F{red}%n%f.%F{cyan}%n%f$_host))"
-
-  __git='${git_info:+${(e)git_info[prompt]}}'
-
-  _virtualenv='${python_info[virtualenv]}'
-
-  _separator=' '
-
-  # Define prompts
-  _left_header="
-${_prompt_steeef_colors[1]}%m%f: ${_prompt_steeef_colors[2]}%~%f  ${__git}"
-  _right_header=''"$(battery_charge) ${_time}"
-  PROMPT="%(?.${success_color}.${failure_color})→%f "
-
-  #PROMPT="
-#$(battery_charge)  [%*]  %~ "'${vcs_info_msg_0_}'"
-#"'$python_info[virtualenv]'"%(?.${success_color}.${failure_color})→%f "
-  #RPROMPT=''
-}
-
-prompt_carl_setup "$@"
+prompt_pure_setup "$@"
