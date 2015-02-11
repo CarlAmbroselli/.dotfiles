@@ -40,6 +40,7 @@ sudo apt-get -qq dist-upgrade
 # Install APT packages.
 packages=(
   ansible
+  zsh
   build-essential
   cowsay
   git-core
