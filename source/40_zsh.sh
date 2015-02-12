@@ -31,7 +31,10 @@ function texpdf() {
 	rm "./$FILENAME""Notes.bib"
 }
 
-[[ -s $(brew --prefix)/etc/autojump.sh  ]] && . $(brew --prefix)/etc/autojump.sh
+OS="$(uname -s)"
+if test "$OS" = "Darwin"; then
+  [[ -s $(brew --prefix)/etc/autojump.sh  ]] && . $(brew --prefix)/etc/autojump.sh
+fi
     
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 ]]; then
