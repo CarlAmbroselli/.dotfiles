@@ -212,7 +212,10 @@ function link_test() {
 }
 function link_do() {
   e_success "Linking ~/$1."
+  # Backup authorized_keys
+  mv ~/.ssh/authorized_keys ~/authorized_keys_backup
   ln -sf ${2#$HOME/} ~/
+  mv ~/authorized_keys_backup ~/.ssh/authorized_keys
 }
 
 # Copy, link, init, etc.
