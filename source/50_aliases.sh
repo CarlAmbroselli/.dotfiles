@@ -17,7 +17,11 @@ alias c='clear'
 alias tmux="TERM=screen-256color-bce tmux"
 
 alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
-
+svgpdf() {
+  ~/Development/Python/CairoSVG-1.0.9/cairosvg.py $1 -f pdf > "$1.pdf";
+  rm $1;
+  rename 's/\.svg//g' $1.pdf 
+}
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
 alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 alias less='less -FSRXc'                    # Preferred 'less' implementation
