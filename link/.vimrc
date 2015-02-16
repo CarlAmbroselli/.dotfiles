@@ -211,3 +211,6 @@ nnoremap <C-t> :TableFormat<cr>
 
 " Copy and Paste to sytem clipboard
 set clipboard=unnamed
+"
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
