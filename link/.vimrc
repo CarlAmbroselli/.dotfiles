@@ -1,6 +1,6 @@
 set nocompatible              " be iMproved, required
 filetype off                  " required
-set shell=/bin/zsh
+set shell=/bin/zsh "\ -i
 
 " Required Vundle setup
 filetype off
@@ -21,6 +21,12 @@ Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'mbbill/undotree'
+Plugin 'tpope/vim-repeat'
+" Plugin 'svermeulen/vim-easyclip'
+Plugin 'dhruvasagar/vim-table-mode'
+
+" After new Plugins run in Vim
+" :PluginInstall
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -214,3 +220,6 @@ set clipboard=unnamed
 "
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
+
+nnoremap d "_d
+nnoremap x "_x

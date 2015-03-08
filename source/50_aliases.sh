@@ -6,7 +6,7 @@ alias lless="ls | less"
 
 alias editr='umount -f ~/Development/Java/Bachelorprojekt/remote/GIRIScripts 2>/dev/null ; sshfs ubuntu@10.0.0.13:/home/ubuntu/i2b2/GIRIScripts /Users/       carlambroselli/Development/Java/Bachelorprojekt/remote/GIRIScripts && cd /Users/carlambroselli/Development/Java/Bachelorprojekt/remote/GIRIScripts'
 alias editgiri='umount -f ~/Development/Java/Bachelorprojekt/remote/GIRIsrc 2>/dev/null ; sshfs ubuntu@10.0.0.13:/home/ubuntu/i2b2/de.erlangen.i2b2.giri/src/ core/de/erlangen/i2b2/giri /Users/carlambroselli/Development/Java/Bachelorprojekt/remote/GIRIsrc && cd /Users/carlambroselli/Development/Java/Bachelorprojekt/remote/GIRIsrc'
-alias mmpdf='echo "cd /Users/carlambroselli/Development/Java/Mastermind/extra/business/plan/; pdflatex main.tex && pdflatex main.tex && open main.pdf;" | /bin/sh'
+alias mmpdf='echo "cd /Users/carlambroselli/Development/Java/Mastermind/extra/business/plan/; pdflatex main.tex && pdflatex main.tex /dev/null && open main.pdf;" | /bin/sh'
 alias cdmm='cd /Users/carlambroselli/Development/Java/Mastermind/'
 alias cdmmweb="cd /Users/carlambroselli/Development/Java/Mastermind/Web"
 alias cdmmtex='cd ~/Development/Java/Mastermind/extra/business/plan/Chapters'
