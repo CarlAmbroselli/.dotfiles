@@ -39,19 +39,12 @@ sudo apt-get -qq dist-upgrade
 
 # Install APT packages.
 packages=(
-  ansible
   zsh
   build-essential
-  cowsay
   git-core
   htop
-  nmap
-  sl
   telnet
-  tree
-  vim
-  openvpn
-  zsh
+  nmap
 )
 
 packages=($(setdiff "${packages[*]}" "$(dpkg --get-selections | grep -v deinstall | awk '{print $1}')"))
