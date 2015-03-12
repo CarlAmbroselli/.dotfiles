@@ -45,6 +45,8 @@ packages=(
   htop
   telnet
   nmap
+  tmux
+  openvpn
 )
 
 packages=($(setdiff "${packages[*]}" "$(dpkg --get-selections | grep -v deinstall | awk '{print $1}')"))
