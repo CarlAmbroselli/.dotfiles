@@ -223,3 +223,6 @@ command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 
 nnoremap d "_d
 nnoremap x "_x
+
+" Enable Paste mode when pasting
+imap <c-v> <plug>EasyClipInsertModePaste
