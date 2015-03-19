@@ -22,7 +22,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'mbbill/undotree'
 Plugin 'tpope/vim-repeat'
-" Plugin 'svermeulen/vim-easyclip'
+Plugin 'svermeulen/vim-easyclip'
 Plugin 'dhruvasagar/vim-table-mode'
 
 " After new Plugins run in Vim
@@ -73,7 +73,7 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 set backspace=indent,eol,start
 
 " enables :Pc to just do what you want
-command Pc execute ':r !pbpaste'
+" command Pc execute ':r !pbpaste'
 
 " Only do this part when compiled with support for autocommands.
 " Tab completion
@@ -219,7 +219,7 @@ nnoremap <C-t> :TableFormat<cr>
 set clipboard=unnamed
 "
 " Allow saving of files as sudo when I forgot to start vim using sudo.
-command W :execute ':silent w !sudo tee % > /dev/null' | :edit!
+command! W :execute ':silent w !sudo tee % > /dev/null' | :edit!
 
 nnoremap d "_d
 nnoremap x "_x
@@ -227,3 +227,6 @@ nnoremap x "_x
 " Change cursor depending on mode
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+" Enable Paste mode when pasting
+imap <c-v> <plug>EasyClipInsertModePaste

@@ -48,6 +48,7 @@ packages=(
   tmux
   openvpn
   vim
+  ruby
 )
 
 packages=($(setdiff "${packages[*]}" "$(dpkg --get-selections | grep -v deinstall | awk '{print $1}')"))
@@ -58,6 +59,8 @@ if (( ${#packages[@]} > 0 )); then
     sudo apt-get -qq install "$package"
   done
 fi
+
+sudo gem install tmuxinator
 
 # Install Git Extras
 if [[ ! "$(type -P git-extras)" ]]; then
