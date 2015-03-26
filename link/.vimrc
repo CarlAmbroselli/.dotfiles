@@ -22,6 +22,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'mbbill/undotree'
 Plugin 'tpope/vim-repeat'
+Plugin 'pangloss/vim-javascript'
 Plugin 'dhruvasagar/vim-table-mode'
 
 " After new Plugins run in Vim
@@ -229,3 +230,34 @@ let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
 
 " Enable Paste mode when pasting
 imap <c-v> <plug>EasyClipInsertModePaste
+
+" Code Folding
+set foldenable          " enable folding
+set foldlevelstart=3   " open most folds by default
+set foldnestmax=10      " 10 nested fold max
+nnoremap <space> za
+set foldmethod=syntax   " fold based on syntax
+au BufWinLeave * mkview " save folds
+au BufWinEnter * silent loadview
+hi Folded ctermfg=7
+fu! CustomFoldText()
+    "get first non-blank line
+    let fs = v:foldstart
+    while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
+    endwhile
+    if fs > v:foldend
+        let line = getline(v:foldstart)
+    else
+        let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
+    endif
+
+    let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
+    let foldSize = 1 + v:foldend - v:foldstart
+    let foldSizeStr = " " . foldSize . " lines "
+    let foldLevelStr = repeat("+--", v:foldlevel)
+    let lineCount = line("$")
+    let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
+    let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
+    return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
+endf
+set foldtext=CustomFoldText()
