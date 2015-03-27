@@ -233,7 +233,7 @@ imap <c-v> <plug>EasyClipInsertModePaste
 
 " Code Folding
 set foldenable          " enable folding
-set foldlevelstart=3   " open most folds by default
+set foldlevelstart=0   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
 nnoremap <space> za
 set foldmethod=syntax   " fold based on syntax
@@ -261,3 +261,18 @@ fu! CustomFoldText()
     return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
 endf
 set foldtext=CustomFoldText()
+
+" move to beginning/end of line
+nnoremap B ^
+nnoremap E $
+
+" highlight last inserted text
+nnoremap gV `[v`]
+
+" Moving Lines
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
