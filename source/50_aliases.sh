@@ -11,6 +11,8 @@ alias cdmm='cd /Users/carlambroselli/Development/Java/Mastermind/'
 alias cdmmweb="cd /Users/carlambroselli/Development/Java/Mastermind/Web"
 alias cdmmtex='cd ~/Development/Java/Mastermind/extra/business/plan/Chapters'
 
+alias ssay='ssh ubuntu@10.0.0.11 "echo \"$1\" | espeak -s 120 2>/dev/null"'
+
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias vi='vim'
 alias c='clear'
