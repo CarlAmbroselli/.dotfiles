@@ -285,8 +285,5 @@ set undodir=$HOME/.vim/undo
 set undolevels=1000
 set undoreload=10000
 
-" Display Minimap
-Minimap
-
 " Keep undo on buffer changes
 set hidden
