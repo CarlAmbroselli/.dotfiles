@@ -24,6 +24,7 @@ Plugin 'mbbill/undotree'
 Plugin 'tpope/vim-repeat'
 Plugin 'pangloss/vim-javascript'
 Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'severin-lemaignan/vim-minimap'
 
 " After new Plugins run in Vim
 " :PluginInstall
@@ -283,3 +284,6 @@ set undodir=$HOME/.vim/undo
 
 set undolevels=1000
 set undoreload=10000
+
+" Display Minimap
+Minimap
