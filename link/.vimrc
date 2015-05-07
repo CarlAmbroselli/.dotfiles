@@ -287,3 +287,6 @@ set undoreload=10000
 
 " Display Minimap
 Minimap
+
+" Keep undo on buffer changes
+set hidden
