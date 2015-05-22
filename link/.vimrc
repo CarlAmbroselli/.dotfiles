@@ -24,7 +24,6 @@ Plugin 'mbbill/undotree'
 Plugin 'tpope/vim-repeat'
 Plugin 'pangloss/vim-javascript'
 Plugin 'dhruvasagar/vim-table-mode'
-Plugin 'severin-lemaignan/vim-minimap'
 
 " After new Plugins run in Vim
 " :PluginInstall
