@@ -24,12 +24,16 @@ Plugin 'mbbill/undotree'
 Plugin 'tpope/vim-repeat'
 Plugin 'pangloss/vim-javascript'
 Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'tomtom/quickfixsigns_vim'
 
 " After new Plugins run in Vim
 " :PluginInstall
 
 call vundle#end()            " required
 filetype plugin indent on    " required
+
+noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
+set relativenumber 
 
 " Highlight markdown syntax
 au BufRead,BufNewFile *.md set filetype=markdown
