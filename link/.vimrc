@@ -203,7 +203,7 @@ inoremap <C-s> <ESC>:w<CR>
 map q: :q
 
 " LanguageTool
-let g:languagetool_jar='~/.vim/bundle/LanguageTool/LanguageTool-2.8/languagetool-commandline.jar'
+let g:languagetool_jar='~/.vim/bundle/LanguageTool/LanguageTool-2.9/languagetool-commandline.jar'
 
 nnoremap <C-c> :LanguageToolCheck<CR>
 nnoremap <C-x> :LanguageToolClear<CR>
@@ -229,8 +229,15 @@ nnoremap d "_d
 nnoremap x "_x
 
 " Change cursor depending on mode
-let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+if &term == "^xterm" || &term == "^screen"
+    let &t_SI = "\e[5 q"
+    let &t_EI = "\e[2 q"
+endif
+
+if exists("$TMUX")
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+endif
 
 " Enable Paste mode when pasting
 imap <c-v> <plug>EasyClipInsertModePaste
@@ -274,12 +281,12 @@ nnoremap E $
 nnoremap gV `[v`]
 
 " Moving Lines
-nnoremap <C-j> :m .+1<CR>==
-nnoremap <C-k> :m .-2<CR>==
-inoremap <C-j> <Esc>:m .+1<CR>==gi
-inoremap <C-k> <Esc>:m .-2<CR>==gi
-vnoremap <C-j> :m '>+1<CR>gv=gv
-vnoremap <C-k> :m '<-2<CR>gv=gv
+" nnoremap <C-J> :m .+1<CR>==
+" nnoremap <C-K> :m .-2<CR>==
+" inoremap <C-J> <Esc>:m .+1<CR>==gi
+" inoremap <C-K> <Esc>:m .-2<CR>==gi
+" vnoremap <C-J> :m '>+1<CR>gv=gv
+" vnoremap <C-K> :m '<-2<CR>gv=gv
 
 " Persistent undo
 set undofile
