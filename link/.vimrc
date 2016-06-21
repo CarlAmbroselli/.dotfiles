@@ -219,7 +219,7 @@ endif
 let g:vim_markdown_folding_disabled=1
 nnoremap <C-t> :TableFormat<cr>
 
-" Copy and Paste to sytem clipboard
+" Copy and Paste to system clipboard
 set clipboard=unnamed
 "
 " Allow saving of files as sudo when I forgot to start vim using sudo.
